@@ -12,6 +12,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -27,18 +28,25 @@ fun StatusPembayaranScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Status Pembayaran", fontSize = 18.sp) },
+                title = {
+                    Text(
+                        "Status Pembayaran",
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController?.popBackStack() }) {
-                        Icon(Icons.Filled.ArrowBack, contentDescription = "Kembali")
+                        Icon(Icons.Filled.ArrowBack, contentDescription = "Kembali", tint = Color.Black)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = Color(0xFF99CAC4)
+                    containerColor = Color(0xFFAED6D3)
                 )
             )
         },
-        containerColor = Color(0xFFFFEED1)
+        containerColor = Color(0xFFFFF0D5)
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -46,12 +54,12 @@ fun StatusPembayaranScreen(
                 .fillMaxSize()
                 .padding(16.dp)
         ) {
+            // Header tabel
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Color(0xFFECECEC))
-                    .border(1.dp, Color.Gray)
-                    .padding(vertical = 6.dp),
+                    .background(Color(0xFFC9D6C3))
+                    .border(1.dp, Color.DarkGray),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 TableHeaderCell("No", 0.15f)
@@ -61,7 +69,7 @@ fun StatusPembayaranScreen(
 
             val dataPembayaran = if (riwayatList.isNotEmpty()) {
                 riwayatList.mapIndexed { index, triple ->
-                    Triple(index + 1, triple.first, if (triple.third == "Lunas") "Lunas" else "Belum Lunas")
+                    Triple(index + 1, triple.first, triple.third)
                 }
             } else {
                 listOf(
@@ -71,7 +79,10 @@ fun StatusPembayaranScreen(
                 )
             }
 
-            LazyColumn {
+            LazyColumn(
+                verticalArrangement = Arrangement.spacedBy(0.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 itemsIndexed(dataPembayaran) { _, (no, bulan, status) ->
                     StatusPembayaranRow(no, bulan, status)
                 }
@@ -82,13 +93,21 @@ fun StatusPembayaranScreen(
 
 @Composable
 fun RowScope.TableHeaderCell(text: String, weight: Float) {
-    Text(
-        text = text,
-        fontSize = 14.sp,
-        color = Color.Black,
+    Box(
         modifier = Modifier
             .weight(weight)
-            .padding(horizontal = 8.dp),
-        textAlign = TextAlign.Center
-    )
+            .background(Color(0xFFD9E1D0))
+            .border(1.dp, Color.Black)
+            .height(IntrinsicSize.Min),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = text,
+            fontSize = 15.sp,
+            color = Color.Black,
+            fontWeight = FontWeight.Bold,
+            textAlign = TextAlign.Center,
+            modifier = Modifier.padding(vertical = 8.dp)
+        )
+    }
 }

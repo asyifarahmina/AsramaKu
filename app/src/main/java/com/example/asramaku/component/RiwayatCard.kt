@@ -2,6 +2,8 @@ package com.example.asramaku.component
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -16,7 +18,8 @@ fun RiwayatCard(
     bulanTagihan: String,
     jumlahTagihan: String,
     status: String,
-    onDetailClick: () -> Unit = {}
+    onDetailClick: () -> Unit = {},
+    onDeleteClick: () -> Unit = {}
 ) {
     Card(
         shape = RoundedCornerShape(8.dp),
@@ -44,12 +47,30 @@ fun RiwayatCard(
                 color = if (status == "Lunas") Color(0xFF2E7D32) else Color(0xFFD32F2F)
             )
             Spacer(modifier = Modifier.height(8.dp))
-            Button(
-                onClick = onDetailClick,
-                modifier = Modifier.align(Alignment.Start),
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E6664))
+
+            // Tombol Lihat detail dan ikon hapus sejajar
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Text("Lihat detail")
+                Button(
+                    onClick = onDetailClick,
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E6664))
+                ) {
+                    Text("Lihat detail")
+                }
+
+                IconButton(
+                    onClick = onDeleteClick,
+                    colors = IconButtonDefaults.iconButtonColors(contentColor = Color(0xFFD32F2F))
+                ) {
+                    Icon(
+                        imageVector = Icons.Filled.Delete,
+                        contentDescription = "Hapus",
+                        tint = Color(0xFFD32F2F)
+                    )
+                }
             }
         }
     }

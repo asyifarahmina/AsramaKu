@@ -6,38 +6,15 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.PhotoCamera
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -53,38 +30,36 @@ import java.io.File
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun KonfirmasiPembayaranScreen(
+    // 🔹 Parameter disamakan dengan yang dipanggil dari MainActivity
+    bulan: String = "",
+    nama: String = "",
+    noKamar: String = "",
+    totalTagihan: String = "",
     onBackClick: () -> Unit = {},
     onSubmitClick: (String, String, String, String, Uri?) -> Unit = { _, _, _, _, _ -> },
     onCancelClick: () -> Unit = {},
-    navigateToRiwayat: () -> Unit = {} // Tambahan navigasi ke RiwayatPembayaranScreen
+    navigateToRiwayat: () -> Unit = {}
 ) {
-    var nama by remember { mutableStateOf("") }
-    var bulan by remember { mutableStateOf("") }
-    var noKamar by remember { mutableStateOf("") }
-    var totalTagihan by remember { mutableStateOf("") }
+    // 🔹 Nilai default otomatis terisi dari navController
+    var inputNama by remember { mutableStateOf(nama) }
+    var inputBulan by remember { mutableStateOf(bulan) }
+    var inputNoKamar by remember { mutableStateOf(noKamar) }
+    var inputTotalTagihan by remember { mutableStateOf(totalTagihan) }
 
     var showDialog by remember { mutableStateOf(false) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
 
     val context = LocalContext.current
     val scrollState = rememberScrollState()
-
-    // Gunakan remember mutableState untuk menyimpan sementara URI kamera
     val tempCameraUri = remember { mutableStateOf<Uri?>(null) }
 
     val cameraLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.TakePicture()
-    ) { success ->
-        if (success) {
-            selectedImageUri = tempCameraUri.value
-        }
-    }
+    ) { success -> if (success) selectedImageUri = tempCameraUri.value }
 
     val pickImageLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent()
-    ) { uri ->
-        uri?.let { selectedImageUri = it }
-    }
+    ) { uri -> uri?.let { selectedImageUri = it } }
 
     fun createImageUri(context: Context): Uri {
         val imageFile = File(context.cacheDir, "photo_${System.currentTimeMillis()}.jpg")
@@ -114,29 +89,29 @@ fun KonfirmasiPembayaranScreen(
             verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             OutlinedTextField(
-                value = nama,
-                onValueChange = { nama = it },
+                value = inputNama,
+                onValueChange = { inputNama = it },
                 label = { Text("Nama") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = bulan,
-                onValueChange = { bulan = it },
+                value = inputBulan,
+                onValueChange = { inputBulan = it },
                 label = { Text("Tagihan Bulan") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = noKamar,
-                onValueChange = { noKamar = it },
+                value = inputNoKamar,
+                onValueChange = { inputNoKamar = it },
                 label = { Text("No. Kamar") },
                 modifier = Modifier.fillMaxWidth()
             )
 
             OutlinedTextField(
-                value = totalTagihan,
-                onValueChange = { totalTagihan = it },
+                value = inputTotalTagihan,
+                onValueChange = { inputTotalTagihan = it },
                 label = { Text("Total Tagihan") },
                 keyboardOptions = KeyboardOptions.Default,
                 modifier = Modifier.fillMaxWidth()
@@ -173,28 +148,31 @@ fun KonfirmasiPembayaranScreen(
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp), modifier = Modifier.fillMaxWidth()) {
                 Button(
                     onClick = {
-                        if (nama.isNotBlank() && bulan.isNotBlank() && noKamar.isNotBlank() &&
-                            totalTagihan.isNotBlank() && selectedImageUri != null
+                        if (inputNama.isNotBlank() && inputBulan.isNotBlank() &&
+                            inputNoKamar.isNotBlank() && inputTotalTagihan.isNotBlank() &&
+                            selectedImageUri != null
                         ) {
-                            onSubmitClick(nama, bulan, noKamar, totalTagihan, selectedImageUri)
-                            navigateToRiwayat() // navigasi ke RiwayatPembayaranScreen
+                            onSubmitClick(
+                                inputNama,
+                                inputBulan,
+                                inputNoKamar,
+                                inputTotalTagihan,
+                                selectedImageUri
+                            )
+                            navigateToRiwayat()
                         } else {
-                            // Snackbar bisa kamu ganti Toast juga
                             println("⚠️ Harap isi semua data terlebih dahulu!")
                         }
                     },
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E6664))
-                ) {
-                    Text("Kirim")
-                }
+                ) { Text("Kirim") }
+
                 Button(
                     onClick = onCancelClick,
                     modifier = Modifier.weight(1f),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2E6664))
-                ) {
-                    Text("Batal")
-                }
+                ) { Text("Batal") }
             }
 
             Spacer(modifier = Modifier.height(60.dp))
@@ -213,6 +191,7 @@ fun KonfirmasiPembayaranScreen(
                         },
                         modifier = Modifier.fillMaxWidth()
                     ) { Text("📁 Pilih Foto") }
+
                     Button(
                         onClick = {
                             showDialog = false

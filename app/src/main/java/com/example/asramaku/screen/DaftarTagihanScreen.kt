@@ -14,7 +14,10 @@ import com.example.asramaku.component.TagihanCard
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun DaftarTagihanScreen(navController: NavController) {
+fun DaftarTagihanScreen(
+    navController: NavController,
+    daftarTagihan: List<String> // 🟢 tambahan agar data bisa direaktifkan
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -39,19 +42,27 @@ fun DaftarTagihanScreen(navController: NavController) {
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            // Data dummy sementara
-            val tagihanList = listOf("November", "Desember")
+            val nama = "Asyifa"
+            val noKamar = "A203"
+            val totalTagihan = "500000"
 
-            tagihanList.forEach { bulan ->
-                TagihanCard(
-                    bulan = bulan,
-                    nama = "Asyifa",
-                    noKamar = "A203",
-                    totalTagihan = "Rp.500.000",
-                    onBayarClick = {
-                        navController.navigate("konfirmasi_pembayaran")
-                    }
-                )
+            // 🟢 Sekarang daftarTagihan berasal dari MainActivity
+            if (daftarTagihan.isEmpty()) {
+                Text("Semua tagihan sudah lunas 🎉", color = Color.DarkGray)
+            } else {
+                daftarTagihan.forEach { bulan ->
+                    TagihanCard(
+                        bulan = bulan,
+                        nama = nama,
+                        noKamar = noKamar,
+                        totalTagihan = "Rp.$totalTagihan",
+                        onBayarClick = {
+                            navController.navigate(
+                                "konfirmasi_pembayaran/${bulan}/${nama}/${noKamar}/${totalTagihan}"
+                            )
+                        }
+                    )
+                }
             }
         }
     }
