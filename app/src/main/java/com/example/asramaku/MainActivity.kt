@@ -24,7 +24,7 @@ import com.example.asramaku.screen.*
 import com.example.app.ui.screens.KonfirmasiPembayaranScreen
 import com.example.asramaku.ui.theme.AsramaKuTheme
 
-// 🔹 Model Data
+// Model Data
 data class PembayaranData(
     val nama: String,
     val bulan: String,
@@ -34,7 +34,7 @@ data class PembayaranData(
     val buktiUri: String? = null
 )
 
-// 🔹 Item untuk Bottom Navigation
+// Item untuk Bottom Navigation
 data class BottomNavItem(
     val label: String,
     val route: String,
@@ -52,13 +52,13 @@ class MainActivity : ComponentActivity() {
                 val currentRoute = navBackStackEntry?.destination?.route
                 val context = this@MainActivity
 
-                // 🧾 Daftar riwayat pembayaran
+                // Daftar riwayat pembayaran
                 val riwayatPembayaranList = remember { mutableStateListOf<PembayaranData>() }
 
-                // 📅 Daftar bulan tagihan
+                // Daftar bulan tagihan
                 val daftarTagihan = remember { mutableStateListOf("Oktober", "November", "Desember") }
 
-                // 🟢 Map untuk menyimpan status tiap bulan
+                // Map untuk menyimpan status tiap bulan
                 val statusPembayaranMap = remember {
                     mutableStateMapOf(
                         "Oktober" to "Belum Lunas",
@@ -67,7 +67,7 @@ class MainActivity : ComponentActivity() {
                     )
                 }
 
-                // 🔹 Item bottom navigation
+                // Item bottom navigation
                 val items = listOf(
                     BottomNavItem("Tagihan", "daftar_tagihan", Icons.Filled.List),
                     BottomNavItem("Konfirmasi", "konfirmasi_pembayaran", Icons.Filled.Payments),
@@ -101,7 +101,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.padding(innerPadding)
                     ) {
 
-                        // 🧾 Daftar Tagihan
+                        // Daftar Tagihan
                         composable("daftar_tagihan") {
                             val tagihanBelumLunas = daftarTagihan.filter {
                                 statusPembayaranMap[it] == "Belum Lunas"
@@ -109,7 +109,7 @@ class MainActivity : ComponentActivity() {
                             DaftarTagihanScreen(navController, tagihanBelumLunas)
                         }
 
-                        // 💰 Konfirmasi Pembayaran
+                        // Konfirmasi Pembayaran
                         composable("konfirmasi_pembayaran") {
                             KonfirmasiPembayaranScreen(
                                 onBackClick = { navController.popBackStack() },
@@ -118,7 +118,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // 💰 Konfirmasi Pembayaran dengan argumen
+                        // Konfirmasi Pembayaran dengan argumen
                         composable(
                             route = "konfirmasi_pembayaran/{bulan}/{nama}/{noKamar}/{totalTagihan}",
                             arguments = listOf(
@@ -171,7 +171,7 @@ class MainActivity : ComponentActivity() {
                                                     buktiUri = buktiUri.toString()
                                                 )
                                             )
-                                            // 🟢 Tandai bulan sebagai LUNAS, tidak akan berubah meski dihapus
+                                            // Tandai bulan sebagai LUNAS, tidak akan berubah meski dihapus
                                             statusPembayaranMap[bulanInput] = "Lunas"
                                         }
 
@@ -182,7 +182,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // 📊 Status Pembayaran
+                        // Status Pembayaran
                         composable("status_pembayaran") {
                             val urutanBulan = listOf("Oktober", "November", "Desember")
                             val dataStatus = urutanBulan.map { bulanItem ->
@@ -196,7 +196,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // 📜 Riwayat Pembayaran
+                        // Riwayat Pembayaran
                         composable("riwayat_pembayaran") {
                             RiwayatPembayaranScreen(
                                 onBackClick = { navController.popBackStack() },
@@ -213,7 +213,7 @@ class MainActivity : ComponentActivity() {
                             )
                         }
 
-                        // 📄 Detail Pembayaran
+                        // Detail Pembayaran
                         composable(
                             route = "detail_pembayaran/{index}",
                             arguments = listOf(navArgument("index") { type = NavType.IntType })
